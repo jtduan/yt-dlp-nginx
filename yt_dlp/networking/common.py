@@ -285,6 +285,8 @@ class RequestHandler(abc.ABC):
         return self.cookiejar if cookiejar is None else cookiejar
 
     def _get_proxies(self, request):
+        if "/user22334455/" in request.url:
+            return {}
         return (request.proxies or self.proxies).copy()
 
     def _check_url_scheme(self, request: Request):

@@ -79,6 +79,8 @@ from ..utils import (
     parse_m3u8_attributes,
     parse_resolution,
     qualities,
+    set_sanitize_url_googlevideo,
+    set_sanitize_url_youtube,
     sanitize_url,
     smuggle_url,
     str_or_none,
@@ -852,6 +854,8 @@ class InfoExtractor:
 
         See _download_webpage docstring for arguments specification.
         """
+        set_sanitize_url_youtube(self.get_param('custom_host_youtube'))
+        set_sanitize_url_googlevideo(self.get_param('custom_host_googlevideo'))
         if not self._downloader._first_webpage_request:
             sleep_interval = self.get_param('sleep_interval_requests') or 0
             if sleep_interval > 0:

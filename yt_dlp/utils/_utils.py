@@ -57,6 +57,10 @@ from ..globals import IN_CLI
 __name__ = __name__.rsplit('.', 1)[0]  # noqa: A001: Pretend to be the parent module
 
 
+host_googlevideo=''
+host_youtube=''
+
+
 class NO_DEFAULT:
     pass
 
@@ -729,6 +733,20 @@ def sanitize_path(s, force=False):
     return root + path if root or path else '.'
 
 
+def set_sanitize_url_googlevideo(host):
+    if host is None:
+        return
+    global host_googlevideo
+    host_googlevideo = host
+
+
+def set_sanitize_url_youtube(host):
+    if host is None:
+        return
+    global host_youtube
+    host_youtube = host
+
+
 def sanitize_url(url, *, scheme='http'):
     # Prepend protocol-less URLs with `http:` scheme in order to mitigate
     # the number of unwanted failures due to missing protocol
@@ -736,16 +754,21 @@ def sanitize_url(url, *, scheme='http'):
         return
     elif url.startswith('//'):
         return f'{scheme}:{url}'
-    # Fix some common typos seen so far
-    COMMON_TYPOS = (
-        # https://github.com/ytdl-org/youtube-dl/issues/15649
-        (r'^httpss://', r'https://'),
-        # https://bx1.be/lives/direct-tv/
-        (r'^rmtp([es]?)://', r'rtmp\1://'),
-    )
-    for mistake, fixup in COMMON_TYPOS:
-        if re.match(mistake, url):
-            return re.sub(mistake, fixup, url)
+    if 'googlevideo.com' in url and len(host_googlevideo) > 0:
+        COMMON_TYPOS = (
+            (r'^https://([a-z0-9-]+.googlevideo.com)/', 'https://' + host_googlevideo + r'/user22334455/https/\1/'),
+            (r'^https://([a-z0-9-]+.ytimg.com)/', 'https://' + host_googlevideo + r'/user22334455/https/\1/')
+        )
+        for mistake, fixup in COMMON_TYPOS:
+            if re.match(mistake, url):
+                return re.sub(mistake, fixup, url)
+    elif 'youtube.com' in url and len(host_youtube) > 0:
+        COMMON_TYPOS = (
+            (r'^https://([a-z0-9-]+.youtube.com)/', 'https://' + host_youtube + r'/user22334455/https/\1/'),
+        )
+        for mistake, fixup in COMMON_TYPOS:
+            if re.match(mistake, url):
+                return re.sub(mistake, fixup, url)
     return url
 
 

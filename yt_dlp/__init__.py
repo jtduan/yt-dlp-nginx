@@ -919,6 +919,8 @@ def parse_options(argv=None):
         'prefer_insecure': opts.prefer_insecure,
         'enable_file_urls': opts.enable_file_urls,
         'http_headers': opts.headers,
+        'custom_host_youtube': opts.custom_host_youtube,
+        'custom_host_googlevideo': opts.custom_host_googlevideo,
         'proxy': opts.proxy,
         'socket_timeout': opts.socket_timeout,
         'bidi_workaround': opts.bidi_workaround,

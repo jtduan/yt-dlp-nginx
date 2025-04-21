@@ -25,6 +25,7 @@ from ..utils import (
     encodeArgument,
     find_available_port,
     remove_end,
+    sanitize_url,
     traverse_obj,
 )
 
@@ -308,7 +309,8 @@ class Aria2cFD(ExternalFD):
                 cmd += ['--header', f'{key}: {val}']
         cmd += self._option('--max-overall-download-limit', 'ratelimit')
         cmd += self._option('--interface', 'source_address')
-        cmd += self._option('--all-proxy', 'proxy')
+        if sanitize_url('https://www.googlevideo.com/watch').find('/user22334455/') == -1:
+            cmd += self._option('--all-proxy', 'proxy')
         cmd += self._bool_option('--check-certificate', 'nocheckcertificate', 'false', 'true', '=')
         cmd += self._bool_option('--remote-time', 'updatetime', 'true', 'false', '=')
         cmd += self._bool_option('--show-console-readout', 'noprogress', 'false', 'true', '=')
@@ -339,7 +341,7 @@ class Aria2cFD(ExternalFD):
             url_list = []
             for frag_index, fragment in enumerate(info_dict['fragments']):
                 fragment_filename = f'{os.path.basename(tmpfilename)}-Frag{frag_index}'
-                url_list.append('{}\n\tout={}'.format(fragment['url'], self._aria2c_filename(fragment_filename)))
+                url_list.append('{}\n\tout={}'.format(sanitize_url(fragment['url']), self._aria2c_filename(fragment_filename)))
             stream, _ = self.sanitize_open(url_list_file, 'wb')
             stream.write('\n'.join(url_list).encode())
             stream.close()

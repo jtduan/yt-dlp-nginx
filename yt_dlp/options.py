@@ -563,6 +563,16 @@ def create_parser():
 
     network = optparse.OptionGroup(parser, 'Network Options')
     network.add_option(
+        '--custom-host-youtube', dest='custom_host_youtube',
+        default=None, metavar='DOMAIN',
+        help=(
+            'customize domain prefix: youtube.com'))
+    network.add_option(
+        '--custom-host-googlevideo', dest='custom_host_googlevideo',
+        default=None, metavar='DOMAIN',
+        help=(
+            'customize domain prefix: googlevideo.com'))
+    network.add_option(
         '--proxy', dest='proxy',
         default=None, metavar='URL',
         help=(
